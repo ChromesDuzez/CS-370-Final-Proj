@@ -17,18 +17,26 @@ reviewsDataRaw = []
 #parse csv into
 for row in df:
     reviewerAdded = False
-    temp = []
+    review_id, listing_id, reviewer_id, datePosted, review
     for key, value in row.items():
         if key == "reviewer_id":
-            temp.append(value)
+            reviewer_id = value
             if value not in setOfReviewerIDs:
                 setOfReviewerIDs.add(value)
                 reviewerAdded = True
         elif key == "reviewer_name" and reviewerAdded:
             setOfReviewerNames.append(value)
+        elif key == "id":
+            review_id = value
+        elif key == "listing_id":
+            listing_id = value
+        elif key == "date":
+            datePosted = value
+        elif key == "comments":
+            review = value
         else:
-            temp.append(value)
-    reviews.append([temp[1],temp[0],temp[3],temp[2],temp[4]])
+            print("[Error 01]: Is the open file formatted correctly for this script?")
+    reviews.append([review_id, listing_id, reviewer_id, datePosted, review])
 
         
 # Open a connection to the database

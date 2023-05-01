@@ -9,25 +9,25 @@ hosts = []
 neighborhoods = set()
 roomType = set()
 
-#temp reviewers data
-setOfReviewerIDs = set()
-setOfReviewerNames = []
+#temp hosts data
+setOfHostIDs = set()
+setOfHostNames = []
 
 #temp reviews data
 reviewsDataRaw = []
 
 #parse csv into
 for row in df:
-    reviewerAdded = False
+    hostAdded = False
     temp = []
     for key, value in row.items():
-        if key == "reviewer_id":
+        if key == "host_id":
             temp.append(value)
-            if value not in setOfReviewerIDs:
-                setOfReviewerIDs.add(value)
-                reviewerAdded = True
-        elif key == "reviewer_name" and reviewerAdded:
-            setOfReviewerNames.append(value)
+            if value not in setOfHostIDs:
+                setOfHostIDs.add(value)
+                hostAdded = True
+        elif key == "host_name" and hostAdded:
+            setOfHostNames.append(value)
         else:
             temp.append(value)
     reviews.append([temp[1],temp[0],temp[3],temp[2],temp[4]])
