@@ -1,17 +1,58 @@
-import pandas as pd
+import csv
+import sqlite3
 
-data = pd.read_csv("reviews.csv")
+file = open("reviews.csv", encoding="utf-8")
+df = csv.DictReader(file)
 
-columns = []
-for line in data:
-    columns.append(line)
+reviewers = []
+reviews = []
 
-parsedData = []
+#temp reviewers data
+setOfReviewerIDs = set()
+setOfReviewerNames = []
 
-counter = 0
-for index in data[columns[0]]:
-    line = str(index) + ", " + str(data[columns[1]][counter]) + ", " + str(data[columns[2]][counter]) + ", " + str(data[columns[3]][counter]) + ", " + str(data[columns[4]][counter]) + ", " + str(data[columns[5]][counter])
-    parsedData.append(line)
-    counter += 1
+#temp reviews data
+reviewsDataRaw = []
 
-print(parsedData)
+#parse csv into
+for row in df:
+    reviewerAdded = False
+    temp = []
+    for key, value in row.items():
+        if key == "reviewer_id":
+            temp.append(value)
+            if value not in setOfReviewerIDs:
+                setOfReviewerIDs.add(value)
+                reviewerAdded = True
+        elif key == "reviewer_name" and reviewerAdded:
+            setOfReviewerNames.append(value)
+        else:
+            temp.append(value)
+    reviews.append([temp[1],temp[0],temp[3],temp[2],temp[4]])
+
+        
+# Open a connection to the database
+conn = sqlite3.connect('proj.db')
+
+# Create a cursor object to execute SQL queries
+cursor = conn.cursor()
+
+## inserting into the reviewers
+setOfReviewerIDs = list(setOfReviewerIDs)
+for index in range(0, len(setOfReviewerIDs)):
+    reviewers.append([setOfReviewerIDs[index], setOfReviewerNames[index]])
+#insert Query
+cursor.executemany('INSERT INTO Reviewers VALUES (?, ?)', reviewers)
+
+## inserting into the reviews
+###check reviews
+##for index in range(0, 16):
+##    print(reviews[index])
+cursor.executemany('INSERT INTO Reviews VALUES (?, ?, ?, ?, ?)', reviews)
+
+# Commit the changes and close the connection
+conn.commit()
+conn.close()
+
+
+
