@@ -1,0 +1,59 @@
+import os
+import zipfile
+from zipfile import ZipFile
+import glob
+import sys
+import subprocess
+import time
+import dateutil.parser as vDtParser
+import re
+
+
+#path to resources
+sSourcePath = "T:\\ZachW\\AccountingTimesheetProject\\TimeSheetCSVs\\"
+AllData = []
+DataOnLine = []
+CurrentDate = ""
+OutputFilePath = "T:\ZachW\AccountingTimesheetProject\Output.csv"
+
+
+def getValuesOnLine(line):
+    tempDataOnLine = []
+    tempString = ""
+    for c in line:
+        if (c == ","):
+            tempDataOnLine.append(tempString)
+            tempString = ""
+        else:
+            tempString = tempString + c
+    return tempDataOnLine
+
+
+def parseLine(line):
+    global CurrentDate
+    global AllData
+    if(line[0] != ","):
+        DataOnLine = getValuesOnLine(line)
+        if((DataOnLine[0] == "Sunday") or (DataOnLine[0] == "Monday") or (DataOnLine[0] == "Tuesday") or (DataOnLine[0] == "Wednesday") or (DataOnLine[0] == "Thursday") or (DataOnLine[0] == "Friday") or (DataOnLine[0] == "Saturday")):
+            CurrentDate = DataOnLine[1]
+        elif((DataOnLine[0] != "Weekday") or (DataOnLine[0] != "Start")):
+            tempString = DataOnLine[0]
+            if(tempString[0].isdigit()):
+                line = CurrentDate + "," + line
+            AllData.append(line)
+
+OutputFile = open(OutputFilePath, "w")
+OutputFile.writelines(AllData)
+AllData.clear()
+OutputFile.close()
+
+for x in os.walk(sSourcePath):
+    for sFile in glob.glob(os.path.join(x[0], "*")):
+        with open(sFile) as fp:
+            for line in fp:
+                parseLine(line)
+        OutputFile = open(OutputFilePath, "a")
+        OutputFile.writelines(AllData)
+        AllData.clear()
+        OutputFile.close()
+                
