@@ -1,20 +1,40 @@
+# Zach Wilson
+# Saba Jamalian
+# CS 370-03 Final Project
+# 5.1.23
+#
+# This script reads in reviews.csv and parses the data to
+#        insert it into my proj.db file which was created by
+#        my create-db.sql script
+
+#### Imports ####
 import csv
 import sqlite3
 
+
+
+
+############ start of logic ############
+#### Open CSV ####
 file = open("reviews.csv", encoding="utf-8")
 df = csv.DictReader(file)
 
+
+
+
+##### declare datatypes #####
+## lists for table insertion (note: one list per table)
 reviewers = []
 reviews = []
 
-#temp reviewers data
+#temp sets/lists for data
 setOfReviewerIDs = set()
 setOfReviewerNames = []
 
-#temp reviews data
-reviewsDataRaw = []
 
-#parse csv into
+
+
+#### parse csv ####
 for row in df:
     reviewerAdded = False
     review_id = None
@@ -43,27 +63,35 @@ for row in df:
             print("[Error 01]: " + str(key) + ": " + str(value))
     reviews.append([review_id, listing_id, reviewer_id, datePosted, review])
 
-        
+
+
+
+#### start the connection to the db ####        
 # Open a connection to the database
 conn = sqlite3.connect('proj.db')
 
 # Create a cursor object to execute SQL queries
 cursor = conn.cursor()
 
-## inserting into the reviewers
+
+
+
+#### inserting into the reviewers ####
 setOfReviewerIDs = list(setOfReviewerIDs)
 for index in range(0, len(setOfReviewerIDs)):
     reviewers.append([setOfReviewerIDs[index], setOfReviewerNames[index]])
 #insert Query
 cursor.executemany('INSERT INTO Reviewers VALUES (?, ?)', reviewers)
 
-## inserting into the reviews
-###check reviews
-##for index in range(0, 16):
-##    print(reviews[index])
+
+
+
+#### inserting into the reviews ####
 cursor.executemany('INSERT INTO Reviews VALUES (?, ?, ?, ?, ?)', reviews)
 
-# Commit the changes and close the connection
+
+
+#### Commit the changes and close the connection ####
 conn.commit()
 conn.close()
 
