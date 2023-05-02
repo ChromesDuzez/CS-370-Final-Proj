@@ -33,7 +33,7 @@ CREATE TABLE Listings(
 	numReviewsLTM INT,
 	licenses TEXT,
 	FOREIGN KEY (host_id) REFERENCES Hosts(id),
-	FOREIGN KEY (neighborhood_id) REFERENCES Heighborhoods(id),
+	FOREIGN KEY (neighborhood_id) REFERENCES Neighborhoods(id),
 	FOREIGN KEY (roomType_id) REFERENCES RoomTypes(id)
 );
 
