@@ -17,15 +17,20 @@ reviewsDataRaw = []
 #parse csv into
 for row in df:
     reviewerAdded = False
-    review_id, listing_id, reviewer_id, datePosted, review
+    review_id = None
+    listing_id = None
+    reviewer_id = None
+    datePosted = None
+    review = None
     for key, value in row.items():
         if key == "reviewer_id":
             reviewer_id = value
             if value not in setOfReviewerIDs:
                 setOfReviewerIDs.add(value)
                 reviewerAdded = True
-        elif key == "reviewer_name" and reviewerAdded:
-            setOfReviewerNames.append(value)
+        elif key == "reviewer_name":
+            if reviewerAdded:
+                setOfReviewerNames.append(value)
         elif key == "id":
             review_id = value
         elif key == "listing_id":
@@ -35,7 +40,7 @@ for row in df:
         elif key == "comments":
             review = value
         else:
-            print("[Error 01]: Is the open file formatted correctly for this script?")
+            print("[Error 01]: " + str(key) + ": " + str(value))
     reviews.append([review_id, listing_id, reviewer_id, datePosted, review])
 
         
