@@ -99,7 +99,7 @@ for row in df:
             longitude = value
         elif key == "price":
             price = value
-        elif key == "minNights":
+        elif key == "minimum_nights":
             minNights = value
         elif key == "reviews_per_month":
             reviewsPerMonth = value
